@@ -18,6 +18,7 @@ import (
 	"code.gitea.io/gitea/modules/util"
 
 	uuid "github.com/google/uuid"
+	"github.com/gobwas/glob"
 	"golang.org/x/crypto/bcrypt"
 	"xorm.io/builder"
 	"xorm.io/xorm"
@@ -56,7 +57,7 @@ func (app *OAuth2Application) PrimaryRedirectURI() string {
 
 // ContainsRedirectURI checks if redirectURI is allowed for app
 func (app *OAuth2Application) ContainsRedirectURI(redirectURI string) bool {
-	return util.IsStringInSlice(redirectURI, app.RedirectURIs, true)
+	return glob.MustCompile(app.RedirectURIs).Match(redirectURI)
 }
 
 // Base32 characters, but lowercased.
